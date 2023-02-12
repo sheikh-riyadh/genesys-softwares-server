@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const { query } = require('express');
 const port = process.env.PORT || 5000
 require('dotenv').config()
 const app = express()
@@ -22,6 +23,12 @@ const run = async () => {
 
 
 
+
+        app.get('/users', async (req, res) => {
+            const filter = {};
+            const data = await userCollection.find(filter).toArray();
+            res.send(data)
+        })
         /* users insert here */
         app.post('/users', async (req, res) => {
             const user = req.body
