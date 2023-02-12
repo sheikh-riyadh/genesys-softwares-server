@@ -21,11 +21,19 @@ const run = async () => {
 
 
 
+
         /* Get all users from here */
         app.get('/users', async (req, res) => {
             const filter = {};
             const data = await userCollection.find(filter).toArray();
             res.send(data)
+        })
+
+        app.get('/user-role', async (req, res) => {
+            const email = req.query.email;
+            console.log(email)
+            const user = await userCollection.findOne({ email: email })
+            res.send(user)
         })
         /* users insert here */
         app.post('/users', async (req, res) => {
