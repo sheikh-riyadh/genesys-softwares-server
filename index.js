@@ -1,10 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const { query } = require('express');
-const port = process.env.PORT || 5000
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express()
+const port = process.env.PORT || 5000
 
 /* Middleware */
 app.use(cors())
@@ -17,13 +16,12 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@clu
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 const run = async () => {
-
     try {
         const userCollection = client.db("genesys").collection('users')
 
 
 
-
+        /* Get all users from here */
         app.get('/users', async (req, res) => {
             const filter = {};
             const data = await userCollection.find(filter).toArray();
@@ -33,6 +31,11 @@ const run = async () => {
         app.post('/users', async (req, res) => {
             const user = req.body
             const result = await userCollection.insertOne(user)
+            res.send(result)
+        })
+
+        app.delete('/users/:id', async (req, res) => {
+            const result = await userCollection.deleteOne({ _id: new ObjectId(req.params.id) });
             res.send(result)
         })
     }
